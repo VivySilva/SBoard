@@ -1,0 +1,98 @@
+.container {
+    width: 100%;
+    height: calc(100vh - 4rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--green-3);
+}
+
+.area_register {
+    background-color: #fffafa;
+    height: 100%;
+    padding: 40px;
+    border: 1px solid var(--green-3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.area_register h2 {
+    font-size: 1.3em;
+    font-weight: 400;
+    width: 70%;
+    text-align: center;
+}
+
+.area_forms {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.area_buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.area_forms button {
+    width: 100%;
+    height: 2.5rem;
+    border-radius: .25rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-bottom: 40px;
+}
+
+.inputs input {
+    width: 100%;
+    height: 2.5rem;
+    border-radius: .25rem;
+    border: 1px solid var(--green-3);
+    padding: 0 10px;
+}
+
+.register_button {
+    color: black;
+    background-color: var(--green-2);
+    transition: background-color 0.2s;
+}
+
+.register_button:hover {
+    background-color: #1fc082;
+}
+
+.input_locked {
+    background-color: var(--gray-1);
+}
+
+
+@media screen and (max-width: 750px) {
+
+    .area_login {
+        width: 100%
+    }
+
+    .area_login h2 {
+        font-size: 1em;
+    }
+}

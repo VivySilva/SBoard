@@ -20,7 +20,7 @@ const Content = styled.div`
   }
 `
 
-export function Home() {
+export function Canvas() {
   // const [request, setRequest] = useState({})
 
   return (
