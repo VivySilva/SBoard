@@ -23,6 +23,8 @@ export const GlobalStyle = createGlobalStyle`
   --green-1: #82EAC3;
   --green-2: #00FA9A;
   --green-3: #34D761;
+  --green-4: #09882C;
+
 }
 
 * {

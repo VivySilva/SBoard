@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Aside } from "../../components/Aside";
 import { GraphArea } from "../../components/GraphArea";
+// import { Header } from "../../components/Header";
 
 const Content = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ export function Canvas() {
   // const [request, setRequest] = useState({})
 
   return (
-      <Content>
+    <Content>
         <GraphArea />
         <Aside />
       </Content>
