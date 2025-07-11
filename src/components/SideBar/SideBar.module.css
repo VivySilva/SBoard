@@ -34,15 +34,15 @@
     border-radius: 10px;
     background-color: var(--green-3);
     border: 3px solid var(--green-3);
-    /* box-shadow: 5px 5px 0 var(--green-4); */
     transition: .3s;
 }
 
 .container button:hover{
     cursor: pointer;
-    color: white;
-    background-color: var(--green-4);
-    border: 3px solid var(--green-4);
+    /* color: white; */
+    background-color: var(--green-3);
+    /* border: 3px solid var(--green-4); */
+    box-shadow: 5px 5px 0 var(--green-4);
 }
 
 .list_functions{
@@ -68,5 +68,4 @@
 .list_functions li:hover{
     cursor: pointer;
     background-color: var(--green-0);
-    
 }
