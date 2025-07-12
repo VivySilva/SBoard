@@ -5,7 +5,7 @@ import { BsCardText } from "react-icons/bs";
 import { BsBoundingBoxCircles } from 'react-icons/bs';
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoLogoGithub } from "react-icons/io5";
-
+import { IoIosArrowRoundForward } from "react-icons/io";
 
 export default function Home() {
     return (
@@ -40,6 +40,8 @@ export default function Home() {
                             <h4>My projects</h4>
                         </div>
                         <p>Access your latest projects created</p>
+
+                        <button>See all Projects<IoIosArrowRoundForward size={30} /></button>
                     </div>
 
                 </div>

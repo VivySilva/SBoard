@@ -7,8 +7,7 @@ import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import { BsBoundingBoxCircles } from 'react-icons/bs';
 import { IoExitOutline } from "react-icons/io5";
 import { motion as MOTION, AnimatePresence } from 'motion/react';
-
-
+import { Link } from 'react-router-dom';
 
 export default function SideBar({ username }: { username: string }) {
     return (
@@ -28,8 +27,12 @@ export default function SideBar({ username }: { username: string }) {
                     <button><GoPlus /> New Project</button>
 
                     <ul className={styles.list_functions}>
-                        <li><IoHomeOutline /> Home</li>
-                        <li><HiOutlineAdjustmentsHorizontal /> Acconunt Settings</li>
+                        <li>
+                            <Link to="/"><IoHomeOutline /> Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/account"><HiOutlineAdjustmentsHorizontal /> Account Settings</Link>
+                        </li>
                         <li><BsBoundingBoxCircles /> Projects</li>
                         <li><IoExitOutline /> Exit</li>
                     </ul>

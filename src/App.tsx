@@ -11,6 +11,7 @@ import Home from './pages/Home/Home';
 import { useState } from 'react';
 import SideBar from './components/SideBar/SideBar';
 import CallSideBar from './components/CallSideBar/CallSideBar';
+import Account from './pages/Account/Account';
 
 function App() {
 
@@ -19,19 +20,21 @@ function App() {
   return (
     <AppProvider >
       <>
-        {/* <Header/> */}
-        
-        {
-          isOpen && 
-          <SideBar username="Viviany Silva"/>
-        }
-        
-        <GlobalStyle />
-        <CallSideBar isOpen={isOpen} setIsOpen={setIsOpen} />
         <BrowserRouter>
+          <Header/>
+          
+          {
+            isOpen && 
+            <SideBar username="Viviany Silva"/>
+          }
+          
+          <GlobalStyle />
+          <CallSideBar isOpen={isOpen} setIsOpen={setIsOpen} />
+          
           <Routes>
-            {/* <Route path="/" element={<Login />} /> */}
             <Route path="/" element={<Home />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/canva" element={<Canvas />} />
           </Routes>

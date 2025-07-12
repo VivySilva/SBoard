@@ -54,9 +54,8 @@ export default function Register() {
 
                     <div className={styles.area_forms}>
                         <form onSubmit={handleSubmit}>
-
-
                             <div className={styles.inputs}>
+                                
                                 <div className={styles.container_input}>
                                     <label>Full name:</label>
                                     <input className={styles.input_locked} type="text" value={values.name} readOnly />
@@ -92,10 +91,10 @@ export default function Register() {
                                 type='submit'
                                 className={styles.register_button}
                                 style={{ marginTop: 10 }}
-                            >Register</button>
+                            >Register
+                            </button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </>

@@ -69,3 +69,8 @@
     cursor: pointer;
     background-color: var(--green-0);
 }
+
+.list_functions li a {
+    color: black;
+    text-decoration: none;
+}
