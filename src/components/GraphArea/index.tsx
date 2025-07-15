@@ -118,20 +118,20 @@ export function GraphArea() {
 
     // console.log(spacing)
     cy?.layout({
-      name: "preset", // colocar o layout atual
+      name: "preset",
       spacingFactor: spacing,
       fit: true
-    }).run()
+    } as any).run();
   }
   function handleChangeSpacingFactor2(spacing: number) {
     if (cy == undefined) return;
     
     // console.log(spacing)
     cy?.layout({
-      name: "preset", // colocar o layout atual
+      name: "preset",
       spacingFactor: spacing,
       fit: true
-    }).run()
+    } as any).run();
   }
 
   function AddEle() {

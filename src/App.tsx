@@ -6,37 +6,34 @@ import { Canvas } from './pages/Canvas/Canvas';
 import { GlobalStyle } from "./styles/global.ts";
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import { BrowserRouter , Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home/Home';
 import { useState } from 'react';
 import SideBar from './components/SideBar/SideBar';
 import CallSideBar from './components/CallSideBar/CallSideBar';
 import Account from './pages/Account/Account';
+import Projects from './pages/Projects/Projects';
+import MainLayout from './components/MainLayout/MainLayout';
 
 function App() {
-
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <AppProvider >
       <>
         <BrowserRouter>
-          <Header/>
-          
-          {
-            isOpen && 
-            <SideBar username="Viviany Silva"/>
-          }
-          
+          <Header />
           <GlobalStyle />
-          <CallSideBar isOpen={isOpen} setIsOpen={setIsOpen} />
-          
+
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/account" element={<Account />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/canva" element={<Canvas />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route element={<MainLayout />} >
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/account" element={<Account />} />
+            </Route>
           </Routes>
         </BrowserRouter>
 

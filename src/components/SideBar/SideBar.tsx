@@ -27,17 +27,31 @@ export default function SideBar({ username }: { username: string }) {
                     <button><GoPlus /> New Project</button>
 
                     <ul className={styles.list_functions}>
-                        <li>
-                            <Link to="/"><IoHomeOutline /> Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/account"><HiOutlineAdjustmentsHorizontal /> Account Settings</Link>
-                        </li>
-                        <li><BsBoundingBoxCircles /> Projects</li>
-                        <li><IoExitOutline /> Exit</li>
+                        <Link to="/" style={{textDecoration:'none', color:'black'}}>
+                            <li>
+                                <IoHomeOutline /> Home
+                            </li>
+                        </Link>
+
+                        <Link to="/account" style={{textDecoration:'none', color:'black'}}>
+                            <li>
+                                <HiOutlineAdjustmentsHorizontal /> Account Settings
+                            </li>
+                        </Link>
+
+                        <Link to={"/projects"} style={{textDecoration:'none', color:'black'}}>
+                            <li>
+                                <BsBoundingBoxCircles /> Projects
+                            </li>
+                        </Link>
+                        <Link to="/login" style={{textDecoration:'none', color:'black'}}>
+                            <li>
+                                <IoExitOutline /> Exit
+                            </li>
+                        </Link>
                     </ul>
                 </MOTION.div>
-            </AnimatePresence>
+            </AnimatePresence >
         </>
     );
 }

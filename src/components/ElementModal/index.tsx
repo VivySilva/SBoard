@@ -123,7 +123,9 @@ export function ElementModal({ isOpen, onRequestClose }: ElementModalProps) {
 
         for (var j = 0; j < Edges.length; j++) {
           var eleInput: any = window.document.getElementsByName(`edgeElementModalInput${Edges[j].data('id')}`)
-          eleInput[0].checked = false;
+          if (eleInput.length > 0) {
+            eleInput[0].checked = false;
+          }
         }
 
         for (var j = 0; j < Edges.length; j++) {
@@ -143,7 +145,9 @@ export function ElementModal({ isOpen, onRequestClose }: ElementModalProps) {
 
         for (var j = 0; j < Edges.length; j++) {
           var eleInput: any = window.document.getElementsByName(`edgeElementModalInput${Edges[j].data('id')}`)
-          eleInput[0].checked = false;
+          if (eleInput.length > 0) {
+            eleInput[0].checked = false;
+          }
         }
       }
     }
@@ -193,7 +197,10 @@ export function ElementModal({ isOpen, onRequestClose }: ElementModalProps) {
     var elemento = cy.$(`${element}`)
     for (var j = 0; j < elemento.length; j++) {
       var eleInput: any = window.document.getElementsByName(`${element}ElementModalInput${elemento[j].data('id')}`)
-      eleInput[0].checked = false;
+      if (eleInput.length > 0) {
+        eleInput[0].checked = false;
+      }
+
     }
 
 

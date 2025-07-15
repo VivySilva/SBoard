@@ -1,0 +1,21 @@
+.container{
+    min-height: calc(100vh - 4rem);
+    margin: 0 auto;
+    padding: 50px;
+}
+
+.my_projects{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    place-content: center;
+    gap: 10px;
+}
+
+.my_projects_area{
+    margin-bottom: 100px;
+}
+
+.my_projects_area h1{
+    margin-bottom: 20px;
+}
