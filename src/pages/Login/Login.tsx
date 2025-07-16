@@ -1,13 +1,24 @@
 import styles from './Login.module.css'
 import { FaUserCircle } from "react-icons/fa";
-// import { BsGoogle } from "react-icons/bs";
 import { Link } from "react-router-dom";
+// import { BsGoogle } from "react-icons/bs";
 
+import { useAuth } from '../../context/AuthContext';
 import { GoogleLogin, } from '@react-oauth/google';
 import { handleGoogleLoginSuccess, handleGoogleLoginError } from '../../services/authGoogle';
 
 
 export default function Login() {
+
+    const { login } = useAuth();
+
+    const onGoogleLoginSuccess = (credentialResponse: any) => {
+        console.log("Google Auth Success:", credentialResponse);
+        // TODO: Enviar o token para o seu backend para verificação
+        // Após a verificação do backend, chame a função para atualizar o estado global
+        login(); 
+    };
+    
     return (
         <>
             <div className={styles.container}>
@@ -31,8 +42,8 @@ export default function Login() {
                         
                         <div className={styles.google_wrapper}>
                             <GoogleLogin
-                                onSuccess={handleGoogleLoginSuccess}
-                                onError={handleGoogleLoginError}
+                                onSuccess={onGoogleLoginSuccess}
+                                onError={() => console.log('Login Failed')}
                                 theme="outline"
                                 size="large"
                                 text="continue_with"

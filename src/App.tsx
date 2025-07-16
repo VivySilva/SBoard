@@ -18,28 +18,28 @@ import MainLayout from './components/MainLayout/MainLayout';
 function App() {
 
   return (
-    <AppProvider >
-      <>
-        <BrowserRouter>
-          <Header />
-          <GlobalStyle />
+    <BrowserRouter>
+      <AppProvider >
+        <>
+            <Header />
+            <GlobalStyle />
 
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/canva" element={<Canvas />} />
-            <Route path="/register" element={<Register />} />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/canva" element={<Canvas />} />
+              <Route path="/register" element={<Register />} />
 
-            <Route element={<MainLayout />} >
-              <Route path="/" element={<Home />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/account" element={<Account />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+              <Route element={<MainLayout />} >
+                <Route path="/" element={<Home />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/account" element={<Account />} />
+              </Route>
+            </Routes>
 
-        <ToastContainer autoClose={3000} />
-      </>
-    </AppProvider>
+          <ToastContainer autoClose={3000} />
+        </>
+      </AppProvider>
+    </BrowserRouter>
   );
 }
 

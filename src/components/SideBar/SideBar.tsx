@@ -7,9 +7,19 @@ import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import { BsBoundingBoxCircles } from 'react-icons/bs';
 import { IoExitOutline } from "react-icons/io5";
 import { motion as MOTION, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { on } from 'events';
 
-export default function SideBar({ username }: { username: string }) {
+interface SideBarProps {
+    username: string;
+    frame: number;
+    onLogout: () => void;
+}
+
+export default function SideBar({ username, frame, onLogout }: SideBarProps) {
+
+    const navigate = useNavigate();
+
     return (
         <>
             <AnimatePresence>
@@ -20,36 +30,53 @@ export default function SideBar({ username }: { username: string }) {
                     exit={{ x: -300 }}
                     transition={{ duration: 0.5 }}
                     className={styles.container}>
-                    <PiUserCircleFill className={styles.avatar} size={130} color='var(--green-3)' />
+                    
+                    {frame === 0 &&
+                        <div className={styles.container}>
+                            <PiUserCircleFill className={styles.avatar} size={130} color='var(--green-3)' />
+                            
+                            <h2>Welcome!</h2>
 
-                    <h2>{username}</h2>
+                            <button onClick={() => navigate('/login')}><IoExitOutline /> Login</button>
 
-                    <button><GoPlus /> New Project</button>
+                        </div>
+                    }   
 
-                    <ul className={styles.list_functions}>
-                        <Link to="/" style={{textDecoration:'none', color:'black'}}>
-                            <li>
-                                <IoHomeOutline /> Home
-                            </li>
-                        </Link>
+                    { frame === 1 &&
+                        <div className={styles.container}>
+                            <PiUserCircleFill className={styles.avatar} size={130} color='var(--green-3)' />
 
-                        <Link to="/account" style={{textDecoration:'none', color:'black'}}>
-                            <li>
-                                <HiOutlineAdjustmentsHorizontal /> Account Settings
-                            </li>
-                        </Link>
+                            <h2>{username}</h2>
 
-                        <Link to={"/projects"} style={{textDecoration:'none', color:'black'}}>
-                            <li>
-                                <BsBoundingBoxCircles /> Projects
-                            </li>
-                        </Link>
-                        <Link to="/login" style={{textDecoration:'none', color:'black'}}>
-                            <li>
-                                <IoExitOutline /> Exit
-                            </li>
-                        </Link>
-                    </ul>
+                            <button onClick={() => navigate('/canva')}><GoPlus /> New Project</button>
+
+                            <ul className={styles.list_functions}>
+                                <li>
+                                    <Link to="/" style={{textDecoration:'none', color:'black'}}>
+                                            <IoHomeOutline /> Home
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link to="/account" style={{textDecoration:'none', color:'black'}}>
+                                            <HiOutlineAdjustmentsHorizontal /> Account Settings
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link to={"/projects"} style={{textDecoration:'none', color:'black'}}>
+                                            <BsBoundingBoxCircles /> Projects
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <button onClick={onLogout}>
+                                        <IoExitOutline /> Exit
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    }
                 </MOTION.div>
             </AnimatePresence >
         </>

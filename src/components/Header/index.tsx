@@ -1,6 +1,7 @@
 // import { Container } from "./styles";
 import styled from "styled-components";
 import logoImg from '../../assets/Logo.svg';
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -20,12 +21,14 @@ export const Container = styled.header`
     /* border-radius: 50%; */
     /* padding: 0.10rem; */
     margin: 0 2rem;
+    cursor: pointer;
 
   }
   
     h1{ 
       font: 5rem 'Roboto Slab', 700;
       /* color: var(--white-2) */
+      cursor: pointer;
     }
   
     h2{
@@ -50,10 +53,12 @@ export const Container = styled.header`
 
 export function Header() {
 
+  const navigate = useNavigate();
+
   return (
     <Container>
-      <img src={logoImg} alt="Logo" loading="lazy" height={'37px'} width={'37px'} />
-      <h1>SBoard</h1>
+      <img src={logoImg} alt="Logo" loading="lazy" height={'37px'} width={'37px'} onClick={() => navigate('/')} />
+      <h1 onClick={() => navigate('/')}>SBoard</h1>
       <h2>Dashboard for managing sliced networks</h2>
     </Container>
   )
