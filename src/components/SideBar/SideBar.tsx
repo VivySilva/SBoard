@@ -9,6 +9,7 @@ import { IoExitOutline } from "react-icons/io5";
 import { motion as MOTION, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { on } from 'events';
+import { toast } from 'react-toastify';
 
 interface SideBarProps {
     username: string;
@@ -70,7 +71,7 @@ export default function SideBar({ username, frame, onLogout }: SideBarProps) {
                                 </li>
 
                                 <li>
-                                    <button onClick={onLogout}>
+                                    <button onClick={() => {onLogout(); toast.success("Logged out successfully!");}}>
                                         <IoExitOutline /> Exit
                                     </button>
                                 </li>

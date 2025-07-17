@@ -33,8 +33,8 @@ export default function Account() {
             // verificar se o telefone existe
             // verificar se a organização existe
             // validar email
-            toast.success("Register with success!")
-            navigate('/canva')
+            toast.success("Changes saved successfully!")
+            // navigate('/account')
         }
     
         return (

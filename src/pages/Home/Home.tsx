@@ -7,8 +7,12 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoLogoGithub } from "react-icons/io5";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import ProjectCardHome from '../../components/ProjectCardHome/ProjectCardHome';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+
+    const navigate = useNavigate()
+    
     return (
         <>
             <div className={styles.container}>
@@ -47,7 +51,7 @@ export default function Home() {
                             <ProjectCardHome />
                             <ProjectCardHome />
                         </div>
-                        <button>See all Projects<IoIosArrowRoundForward size={30} /></button>
+                        <button onClick={() => {navigate('/projects')}}>See all Projects<IoIosArrowRoundForward size={30} /></button>
                     </div>
 
                 </div>
