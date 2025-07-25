@@ -3,19 +3,37 @@ import { FaUserCircle } from "react-icons/fa";
 import { BsGoogle } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import {useNavigate} from 'react-router-dom'
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { completeRegistration } from '../../services/authGoogle';
 
 export default function Register() {
 
     const navigate = useNavigate()
     
     const [values, setValues] = useState({
-        name: 'Viviany Linda Amor de Augusto',
-        email: 'vivy@gmail.com',
+        name: '',
+        email: '',
         phone: '',
         organization: ''
-    })
+    });
+
+    useEffect(() => {
+    // Verifica se há usuário temporário no localStorage
+        const storedUser = localStorage.getItem('tempGoogleUser');
+        if (!storedUser) {
+        navigate('/login');
+        return;
+    }
+
+    const userData = JSON.parse(storedUser);
+        // Preenche os campos do formulário com os dados do usuário
+        setValues({
+        name: userData.name || '',
+        email: userData.email || '',
+        phone: '',
+        organization: ''
+        });
+    }, [navigate]);
 
     function clearForm(){
         setValues({...values, phone: '', organization: ''})
@@ -29,14 +47,26 @@ export default function Register() {
         return value
     }
     
-    function handleSubmit(e: any) { 
+    async function handleSubmit(e: React.FormEvent) { 
         e.preventDefault()
         clearForm()
         // verificar se o telefone existe
         // verificar se a organização existe
-        // vlaidar email
-        toast.success("Register with success!")
-        navigate('/canva')
+        // validar email
+        
+        try {
+            await completeRegistration({
+            phone: values.phone,
+            organization: values.organization
+            });
+            
+            navigate('/home'); // Ou para onde desejar após registro
+            toast.success("Register with success!")
+        } catch (error) {
+            console.error('Registration failed:', error);
+        }
+        
+        // navigate('/canva')
     }
 
     return (

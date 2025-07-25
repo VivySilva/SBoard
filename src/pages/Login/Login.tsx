@@ -3,22 +3,33 @@ import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 // import { BsGoogle } from "react-icons/bs";
 
+import { CredentialResponse, GoogleLogin, } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
-import { GoogleLogin, } from '@react-oauth/google';
-import { handleGoogleLoginSuccess, handleGoogleLoginError } from '../../services/authGoogle';
-
+import { handleGoogleLoginSuccess } from '../../services/authGoogle';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
 
     const { login } = useAuth();
 
-    const onGoogleLoginSuccess = (credentialResponse: any) => {
-        console.log("Google Auth Success:", credentialResponse);
-        // TODO: Enviar o token para o seu backend para verificação
-        // Após a verificação do backend, chame a função para atualizar o estado global
-        login(); 
+    const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+        try {
+            const decoded = jwtDecode<{ email: string, name?: string, picture?: string }>(
+            credentialResponse.credential!
+            );
+            
+            await login({
+            email: decoded.email,
+            name: decoded.name,
+            photo: decoded.picture
+            });
+        } catch (error) {
+            toast.error('Falha no login com Google');
+            console.error(error);
+        }
     };
-    
+
     return (
         <>
             <div className={styles.container}>
@@ -43,18 +54,18 @@ export default function Login() {
                         <div className={styles.google_wrapper}>
                             <GoogleLogin
                                 onSuccess={onGoogleLoginSuccess}
-                                onError={() => console.log('Login Failed')}
+                                onError={() => toast.error("Falha no login com Google")}
                                 theme="outline"
                                 size="large"
                                 text="continue_with"
                             />
                         </div>
                         
-                        <span> <p> OR </p> </span>
+                        {/* <span> <p> OR </p> </span>
                         
                         <Link to="/register" className={styles.register_button} style={{ marginTop: 10 }}>
                             Register
-                        </Link>
+                        </Link> */}
                     </div>
 
                 </div>
