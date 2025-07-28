@@ -45,7 +45,7 @@ export default function Account() {
                 <form onSubmit={handleSubmit}>
                 
                     <div className={styles.container_input}>
-                        <label>Full name:</label>
+                        <label>Name:</label>
                         <input className={styles.input_locked} type="text" value={values.name} readOnly />
                     </div>
                     

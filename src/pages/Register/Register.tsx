@@ -1,15 +1,19 @@
 import styles from './Register.module.css'
 import { FaUserCircle } from "react-icons/fa";
-import { BsGoogle } from "react-icons/bs";
+// import { BsGoogle } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import {useNavigate} from 'react-router-dom'
 import { useState, useEffect } from 'react';
-import { completeRegistration } from '../../services/authGoogle';
+// import { completeRegistration } from '../../services/authGoogle';
+import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../services/authGoogle';
 
 export default function Register() {
 
     const navigate = useNavigate()
+    const { register, tempUser, loading, error } = useAuth();
     
+    // Estado para armazenar os valores do formulário
     const [values, setValues] = useState({
         name: '',
         email: '',
@@ -17,23 +21,26 @@ export default function Register() {
         organization: ''
     });
 
-    useEffect(() => {
-    // Verifica se há usuário temporário no localStorage
-        const storedUser = localStorage.getItem('tempGoogleUser');
-        if (!storedUser) {
-        navigate('/login');
-        return;
-    }
 
-    const userData = JSON.parse(storedUser);
-        // Preenche os campos do formulário com os dados do usuário
+    useEffect(() => {
+        // Verifica se há usuário temporário
+        const storedUser = localStorage.getItem('tempGoogleUser');
+        const userData = storedUser ? JSON.parse(storedUser) : tempUser;
+
+        // // Se não houver usuário temporário, redireciona para login
+        // if (!userData) {
+        //     navigate('/login');
+        //     return;
+        // }
+
+        // Preenche os campos do formulário
         setValues({
-        name: userData.name || '',
-        email: userData.email || '',
-        phone: '',
-        organization: ''
+            name: userData.name || '',
+            email: userData.email || '',
+            phone: '',
+            organization: ''
         });
-    }, [navigate]);
+    }, [tempUser, navigate]);
 
     function clearForm(){
         setValues({...values, phone: '', organization: ''})
@@ -46,28 +53,17 @@ export default function Register() {
         value = value.replace(/(\d)(\d{4})$/, "$1-$2")
         return value
     }
-    
-    async function handleSubmit(e: React.FormEvent) { 
-        e.preventDefault()
-        clearForm()
-        // verificar se o telefone existe
-        // verificar se a organização existe
-        // validar email
-        
-        try {
-            await completeRegistration({
-            phone: values.phone,
+
+    // Função para lidar com o envio do formulário
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        await register({
+            name: values.name,
+            telephone: values.phone,
             organization: values.organization
-            });
-            
-            navigate('/home'); // Ou para onde desejar após registro
-            toast.success("Register with success!")
-        } catch (error) {
-            console.error('Registration failed:', error);
-        }
-        
-        // navigate('/canva')
-    }
+        });
+    };
 
     return (
         <>
@@ -88,7 +84,7 @@ export default function Register() {
                                 
                                 <div className={styles.container_input}>
                                     <label>Full name:</label>
-                                    <input className={styles.input_locked} type="text" value={values.name} readOnly />
+                                    <input className={styles.input_locked} type="text" value={values.name} onChange={(e) => setValues({...values, name: e.target.value})} readOnly />
                                 </div>
                                 <div className={styles.container_input}>
                                     <label>E-mail:</label>
@@ -109,7 +105,7 @@ export default function Register() {
                                     <label>Organization (study/work):</label>
                                     <input
                                         type="text"
-                                        placeholder='Ex: UFPI'
+                                        placeholder='Ex.: UFPI'
                                         value={values.organization}
                                         onChange={(e) => setValues({ ...values, organization: e.target.value })}
                                         required />

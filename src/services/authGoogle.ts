@@ -22,7 +22,7 @@ interface GooglePayload {
 export async function handleGoogleLoginSuccess(credentialResponse: CredentialResponse) {
   try {
     const token = credentialResponse.credential;
-    if (!token) throw new Error("Token não recebido");
+    if (!token) throw new Error("Token not provided");
 
     // Decodifica o token JWT do Google
     const decodedToken = jwtDecode<GooglePayload>(token);
@@ -37,7 +37,7 @@ export async function handleGoogleLoginSuccess(credentialResponse: CredentialRes
 
     // Se não encontrou o usuário (erro PGRST116 é "nenhum resultado encontrado")
     if (queryError && queryError.code !== 'PGRST116') {
-      throw new Error('Erro ao verificar usuário no banco de dados');
+      throw new Error('Error verifying user existence in Supabase');
     }
 
     // 2. Se usuário não existe, prepara para registro
@@ -54,18 +54,18 @@ export async function handleGoogleLoginSuccess(credentialResponse: CredentialRes
 
   } catch (error) {
     console.error('Google login error:', error);
-    throw new Error(error instanceof Error ? error.message : 'Falha no login');
+    throw new Error(error instanceof Error ? error.message : 'Failed to login with Google');
   }
 }
 
 export async function completeRegistration(additionalData: { phone: string; organization: string; }) {
   try {
     const storedUser = localStorage.getItem('tempGoogleUser');
-    if (!storedUser) throw new Error('Dados do usuário não encontrados');
+    if (!storedUser) throw new Error('Data for registration not found');
 
     const { email, name, picture } = JSON.parse(storedUser);
     const token = localStorage.getItem('googleToken');
-    if (!token) throw new Error('Token de autenticação não encontrado');
+    if (!token) throw new Error('Token not found');
 
     // 1. Registra no Supabase
     const { data: user, error } = await supabase
@@ -86,17 +86,17 @@ export async function completeRegistration(additionalData: { phone: string; orga
     localStorage.removeItem('tempGoogleUser');
     
     // 3. Notifica sucesso
-    toast.success('Cadastro realizado com sucesso!');
+    toast.success('Registered successfully!');
     return user;
 
   } catch (error) {
     console.error('Registration error:', error);
-    toast.error('Erro ao completar cadastro');
+    toast.error('Error registering user');
     throw error;
   }
 }
 
 export function handleGoogleLoginError() {
-  toast.error("Falha no login com Google");
-  throw new Error("Falha no login com Google");
+  toast.error("Failed to login with Google");
+  throw new Error("Failed to login with Google");
 }

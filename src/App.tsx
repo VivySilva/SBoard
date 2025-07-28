@@ -14,31 +14,34 @@ import CallSideBar from './components/CallSideBar/CallSideBar';
 import Account from './pages/Account/Account';
 import Projects from './pages/Projects/Projects';
 import MainLayout from './components/MainLayout/MainLayout';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
   return (
     <BrowserRouter>
-      <AppProvider >
-        <>
-            <Header />
-            <GlobalStyle />
+      <AuthProvider>
+        <AppProvider >
+          <>
+              <Header />
+              <GlobalStyle />
 
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/canva" element={<Canvas />} />
-              <Route path="/register" element={<Register />} />
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/canva" element={<Canvas />} />
+                <Route path="/register" element={<Register />} />
 
-              <Route element={<MainLayout />} >
-                <Route path="/" element={<Home />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/account" element={<Account />} />
-              </Route>
-            </Routes>
+                <Route element={<MainLayout />} >
+                  <Route path="/" element={<Home />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/account" element={<Account />} />
+                </Route>
+              </Routes>
 
-          <ToastContainer autoClose={3000} />
-        </>
-      </AppProvider>
+            <ToastContainer autoClose={3000} />
+          </>
+        </AppProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -11,22 +11,20 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
 
-    const { login } = useAuth();
+    const { login, isAuthenticated } = useAuth();
 
+    // Função para lidar com o sucesso do login com Google
     const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+        if (!credentialResponse.credential) return;
+  
+        localStorage.setItem('googleToken', credentialResponse.credential);
+        
         try {
-            const decoded = jwtDecode<{ email: string, name?: string, picture?: string }>(
-            credentialResponse.credential!
-            );
-            
-            await login({
-            email: decoded.email,
-            name: decoded.name,
-            photo: decoded.picture
-            });
+            await login(credentialResponse);
+            const decoded = jwtDecode(credentialResponse.credential!);
+            // console.log('Dados completos do Google:', decoded);
         } catch (error) {
-            toast.error('Falha no login com Google');
-            console.error(error);
+            toast.error("Failed to login with Google");
         }
     };
 
@@ -54,10 +52,10 @@ export default function Login() {
                         <div className={styles.google_wrapper}>
                             <GoogleLogin
                                 onSuccess={onGoogleLoginSuccess}
-                                onError={() => toast.error("Falha no login com Google")}
+                                onError={() => toast.error("Failed to login with Google")}
                                 theme="outline"
                                 size="large"
-                                text="continue_with"
+                                // text="continue_with"
                             />
                         </div>
                         
