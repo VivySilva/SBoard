@@ -27,6 +27,7 @@ interface AuthContextType {
   login: (credentialResponse: CredentialResponse) => Promise<void>; 
   register: (userData: Partial<User>) => Promise<void>; 
   logout: () => void;
+  updateUser: (updates: Partial<User>) => Promise<void>; 
   loading: boolean;
   error: string | null;
   tempUser: GooglePayload | null;
@@ -78,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Verifica se o token foi recebido
       const decoded = jwtDecode<GooglePayload>(credentialResponse.credential!);
       const userData = await fetchUser(decoded.email);
+      // console.log('Decoded Google data:', decoded);
 
       // Se o usuário já existe, armazena os dados e redireciona para a home
       if (userData) {
@@ -158,6 +160,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [tempUser, navigate]);
 
+  const updateUser = useCallback(async (updates: Partial<User>) => {
+    try {
+      setUser(prev => {
+        if (!prev) return null;
+        const updatedUser = { ...prev, ...updates };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return updatedUser;
+      });
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
+  }, []);
+
   const logout = useCallback(() => {
     // Limpa os dados do usuário e redireciona para a home
     localStorage.removeItem('googleToken');
@@ -211,6 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     register,
     logout,
+    updateUser,
     loading,
     error,
     tempUser

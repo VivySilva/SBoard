@@ -31,7 +31,7 @@ export default function Home() {
                             <BsCardText size={30} />
                             <h4>Description</h4>
                         </div>
-                        <p>SBoard is an interactive web platform designed to visualize,
+                            <p>SBoard is an interactive web platform designed to visualize,
                             simulate and manage the service cycle of virtual networks
                             within the Network Slicing concept in 5G. The application
                             allows users to analyze the operation of different network
