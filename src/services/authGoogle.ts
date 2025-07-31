@@ -1,6 +1,4 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { jwtDecode } from "jwt-decode";
-import { CredentialResponse } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -12,21 +10,19 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-interface GooglePayload {
+interface GoogleProfile {
+  googleId: string;
   email: string;
-  name?: string;
-  picture?: string; 
-  sub: string; // ID do usuário no Google
+  name: string;
+  imageUrl: string;
+  givenName?: string;
+  familyName?: string;
 }
 
-export async function handleGoogleLoginSuccess(credentialResponse: CredentialResponse) {
+export async function handleGoogleLoginSuccess(response: { tokenId: string, profile: GoogleProfile }) {
   try {
-    const token = credentialResponse.credential;
-    if (!token) throw new Error("Token not provided");
-
-    // Decodifica o token JWT do Google
-    const decodedToken = jwtDecode<GooglePayload>(token);
-    const { email, name, picture } = decodedToken;
+    const { tokenId, profile } = response;
+    const { email, name, imageUrl, googleId } = profile;
 
     // 1. Verifica se o usuário já existe no Supabase
     const { data: user, error: queryError } = await supabase
@@ -35,35 +31,45 @@ export async function handleGoogleLoginSuccess(credentialResponse: CredentialRes
       .eq('email', email)
       .single();
 
-    // Se não encontrou o usuário (erro PGRST116 é "nenhum resultado encontrado")
     if (queryError && queryError.code !== 'PGRST116') {
       throw new Error('Error verifying user existence in Supabase');
     }
 
     // 2. Se usuário não existe, prepara para registro
     if (!user) {
-      const tempUser = { email, name, picture };
+      const tempUser = { 
+        googleId,
+        email, 
+        name, 
+        imageUrl,
+        givenName: profile.givenName,
+        familyName: profile.familyName
+      };
       localStorage.setItem('tempGoogleUser', JSON.stringify(tempUser));
-      localStorage.setItem('googleToken', token);
+      localStorage.setItem('googleToken', tokenId);
       return null; // Redirecionará para registro
     }
 
     // 3. Se usuário existe, armazena token e retorna dados
-    localStorage.setItem('googleToken', token);
-    return user;
+    localStorage.setItem('googleToken', tokenId);
+    return {
+      ...user,
+      photo: user.photo || imageUrl // Atualiza com a foto do Google se necessário
+    };
 
   } catch (error) {
     console.error('Google login error:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to login with Google');
+    toast.error('Failed to login with Google');
+    throw error;
   }
 }
 
-export async function completeRegistration(additionalData: { phone: string; organization: string; }) {
+export async function completeRegistration(additionalData: { phone: string; organization: string }) {
   try {
     const storedUser = localStorage.getItem('tempGoogleUser');
     if (!storedUser) throw new Error('Data for registration not found');
 
-    const { email, name, picture } = JSON.parse(storedUser);
+    const { email, name, imageUrl } = JSON.parse(storedUser);
     const token = localStorage.getItem('googleToken');
     if (!token) throw new Error('Token not found');
 
@@ -75,7 +81,7 @@ export async function completeRegistration(additionalData: { phone: string; orga
         name,
         telephone: additionalData.phone,
         organization: additionalData.organization,
-        photo: picture
+        photo: imageUrl
       }])
       .select()
       .single();

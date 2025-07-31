@@ -44,6 +44,9 @@ importers:
       react-dropzone:
         specifier: ^11.7.1
         version: 11.7.1(react@18.3.1)
+      react-google-login:
+        specifier: ^5.2.2
+        version: 5.2.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-hook-form:
         specifier: ^7.33.1
         version: 7.58.1(react@18.3.1)
@@ -2178,6 +2181,13 @@ packages:
     engines: {node: '>= 10.13'}
     peerDependencies:
       react: '>= 16.8'
+
+  react-google-login@5.2.2:
+    resolution: {integrity: sha512-JUngfvaSMcOuV0lFff7+SzJ2qviuNMQdqlsDJkUM145xkGPVIfqWXq9Ui+2Dr6jdJWH5KYdynz9+4CzKjI5u6g==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    peerDependencies:
+      react: ^16 || ^17
+      react-dom: ^16 || ^17
 
   react-hook-form@7.58.1:
     resolution: {integrity: sha512-Lml/KZYEEFfPhUVgE0RdCVpnC4yhW+PndRhbiTtdvSlQTL8IfVR+iQkBjLIvmmc6+GGoVeM11z37ktKFPAb0FA==}
@@ -5007,6 +5017,13 @@ snapshots:
       file-selector: 0.4.0
       prop-types: 15.8.1
       react: 18.3.1
+
+  react-google-login@5.2.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@types/react': 18.3.23
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-hook-form@7.58.1(react@18.3.1):
     dependencies:

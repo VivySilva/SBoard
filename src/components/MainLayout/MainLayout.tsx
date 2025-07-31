@@ -19,6 +19,7 @@ export default function MainLayout() {
                     username={user?.name || "Username"}
                     frame={isAuthenticated ? 1 : 0}
                     onLogout={logout}
+                    userPhotoUrl={user?.photo}
                 />
             }
             <main>

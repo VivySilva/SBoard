@@ -14,10 +14,11 @@ import { toast } from 'react-toastify';
 interface SideBarProps {
     username: string;
     frame: number;
+    userPhotoUrl?: string | null; 
     onLogout: () => void;
 }
 
-export default function SideBar({ username, frame, onLogout }: SideBarProps) {
+export default function SideBar({ username, frame, onLogout, userPhotoUrl }: SideBarProps) {
 
     const navigate = useNavigate();
 
@@ -45,7 +46,17 @@ export default function SideBar({ username, frame, onLogout }: SideBarProps) {
 
                     { frame === 1 &&
                         <div className={styles.container}>
+                            {/* <PiUserCircleFill className={styles.avatar} size={130} color='var(--green-3)' /> */}
+                            {userPhotoUrl ? (
+                                <img
+                                src={userPhotoUrl}
+                                alt={username}
+                                className={styles.avatar}
+                                style={{ objectFit: 'cover' }} // Garante que a imagem cubra o espaço
+                                />
+                            ) : (
                             <PiUserCircleFill className={styles.avatar} size={130} color='var(--green-3)' />
+                            )}
 
                             <h2>{username}</h2>
 

@@ -161,18 +161,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [tempUser, navigate]);
 
   const updateUser = useCallback(async (updates: Partial<User>) => {
-    try {
-      setUser(prev => {
-        if (!prev) return null;
-        const updatedUser = { ...prev, ...updates };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        return updatedUser;
-      });
-    } catch (error) {
-      console.error('Profile update error:', error);
-      throw error;
-    }
-  }, []);
+  try {
+    setUser(prev => {
+      if (!prev) return null;
+      const updatedUser = { ...prev, ...updates };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    throw error;
+  }
+}, []);
 
   const logout = useCallback(() => {
     // Limpa os dados do usuário e redireciona para a home
