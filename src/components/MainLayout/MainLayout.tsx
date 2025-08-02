@@ -2,7 +2,7 @@ import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import SideBar from "../SideBar/SideBar";
 import { useState, useEffect } from "react";
 import CallSideBar from "../CallSideBar/CallSideBar";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/Auth/AuthContext";
 import { use } from "cytoscape";
 
 export default function MainLayout() {

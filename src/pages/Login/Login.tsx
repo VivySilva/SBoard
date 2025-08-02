@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // import { BsGoogle } from "react-icons/bs";
 
 import { CredentialResponse, GoogleLogin, } from '@react-oauth/google';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context//Auth/AuthContext';
 import { handleGoogleLoginSuccess } from '../../services/authGoogle';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';

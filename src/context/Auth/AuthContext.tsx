@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../services/authGoogle';
+import { supabase } from '../../services/authGoogle';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import { CredentialResponse } from '@react-oauth/google';
