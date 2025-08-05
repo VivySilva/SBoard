@@ -2,6 +2,7 @@ import { CytoscapeProvider } from "./CytoscapeGraph/CytoscapeContext";
 import { RequestProvider } from "./Request/RequestContext";
 import { IsGraphProvider } from "./IsGraph/isGraph";
 import { AuthProvider } from "./Auth/AuthContext";
+import { GraphProvider } from "./GraphContext/GraphContext";
 
 export type ProviderStack = ((children: JSX.Element) => JSX.Element)[];
 
@@ -10,6 +11,7 @@ export type ProviderStack = ((children: JSX.Element) => JSX.Element)[];
  */
 const providers = [
   (children) => <AuthProvider>{children}</AuthProvider>,
+  (children) => <GraphProvider>{children}</GraphProvider>,
   (children) => <CytoscapeProvider>{children}</CytoscapeProvider>,
   (children) => <RequestProvider>{children}</RequestProvider>,
   (children) => <IsGraphProvider>{children}</IsGraphProvider>,

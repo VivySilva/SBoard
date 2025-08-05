@@ -5,6 +5,8 @@ import { RequestContext } from "../../context/Request/RequestContext";
 
 import { ShowVND } from "./showVND/showVND";
 import { Container } from "./styles";
+import { useGraph } from "../../context/GraphContext/GraphContext";
+import { toast } from "react-toastify";
 
 const CreateRequest = lazy(()=> import("./CreateRequest").then(module=>({default:module.CreateRequest})))
 const EditionRequest = lazy(()=> import("./EditionRequest/index").then(module=>({default:module.EditionRequest})))
@@ -16,6 +18,7 @@ const AsideOthers = lazy(()=> import("./outhers/others").then(module=>({default:
 
 export function Aside() {
   const [requestList, setRequestList] = useContext(RequestContext)
+  const { currentGraph, saveGraph } = useGraph();
   const qtdRequests = (0)
 
 
@@ -44,6 +47,26 @@ export function Aside() {
       reader.readAsText(file.target.files[0]);
     } catch (error) {
       console.error('Erro de reader nao foi inserido um arquivo para ler');
+    }
+  };
+
+  const handleSaveGraph = async () => {
+    if (!currentGraph?.id) {
+      toast.warning("Nenhum grafo carregado para salvar");
+      return;
+    }
+    
+    try {
+      // Aqui você precisaria obter os nodes e edges do Cytoscape
+      // Isso depende da sua implementação específica
+      const nodes: any[] = []; // Obtenha os nodes do grafo
+      const edges: any[] = []; // Obtenha as edges do grafo
+      
+      await saveGraph(nodes, edges);
+      toast.success("Grafo salvo com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar grafo:", error);
+      toast.error("Falha ao salvar o grafo");
     }
   };
   

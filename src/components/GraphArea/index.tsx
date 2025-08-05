@@ -1,24 +1,26 @@
-import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { StartGraph } from '../startGraph';
 import { CytoscapeContext } from '../../context/CytoscapeGraph/CytoscapeContext';
 import { RequestContext } from '../../context/Request/RequestContext';
+import { useGraph } from '../../context/GraphContext/GraphContext';
 
 const SetupModal = lazy((): Promise<any> => import('../SetupModal'));
 
 import { AiOutlineExpandAlt, AiOutlineShrink, AiOutlineZoomIn, AiOutlineZoomOut } from 'react-icons/ai';
-import { BiGitPullRequest } from 'react-icons/bi';
+import { BiGitPullRequest, BiSave } from 'react-icons/bi';
 import { BsGear, BsLayoutWtf } from 'react-icons/bs';
 import { HiOutlineViewGridAdd } from 'react-icons/hi';
 import { RiChatDeleteLine } from 'react-icons/ri';
 import { TbFocusCentered } from 'react-icons/tb';
 import { IoAnalyticsOutline } from 'react-icons/io5';
 
-
-
 import Modal from 'react-modal';
 
 import { Container, GraphContainer, NavOptions } from "./styles";
 import useInitCytoscapeExtensions from '../../hooks/useInitCytoscapeExtensions';
+import { useAuth } from '../../context/Auth/AuthContext';
+import { toast } from 'react-toastify';
+
 
 
 Modal.setAppElement('#root')
@@ -30,6 +32,12 @@ export function GraphArea() {
   const [isSetupModal, setIsSetupModal] = useState(false);
   const hiddenFileRequestInput = useRef<any>(null);
   const [drawMode, setDrawMode] = useState(false);
+ 
+  const { currentGraph, saveGraph, loading: graphLoading } = useGraph();
+  const { user } = useAuth();
+  const [saveStatus, setSaveStatus] = useState("");
+  const [graphName, setGraphName] = useState(currentGraph?.nome || 'new graph');
+ 
   const layouts = [
     {
       name: "preset",
@@ -70,14 +78,32 @@ export function GraphArea() {
   var count = 0
   var prevSpacingFactor = 50 // 50 is the default value in range 0-150
 
+  // Atualiza o nome do grafo quando currentGraph muda
+  useEffect(() => {
+    if (currentGraph) {
+      setGraphName(currentGraph.nome);
+    }
+  }, [currentGraph]);
 
+
+  // Configura os listeners do Cytoscape
   useEffect(() => {
     if (!cy) return;
+    
     cy.on('tap', (event: any) => {
-      setElement(event.target._private.data)
+      setElement(event.target._private.data);
     });
     
-  }, [cy])
+    // Listener para mudanças no grafo
+    cy.on('add remove', () => {
+      debouncedSave();
+    });
+
+    return () => {
+      cy.off('add remove');
+      cy.off('tap');
+    };
+  }, [cy]);
 
   // Update edgehandles draw mode
   useEffect(() => {
@@ -85,6 +111,39 @@ export function GraphArea() {
     drawMode ? edgeHandles.enableDrawMode() : edgeHandles.disableDrawMode();
   }, [drawMode, edgeHandles]);
 
+  // Debounce para salvamento automático
+  const debouncedSave = useCallback(() => {
+    if (!cy || !currentGraph?.id || !user?.id) return;
+    
+    const timer = setTimeout(async () => {
+      try {
+        setSaveStatus("Salvando...");
+        
+        const nodes = cy.nodes().map(node => ({
+          id: node.id(),
+          ...node.data()
+        }));
+        
+        const edges = cy.edges().map(edge => ({
+          id: edge.id(),
+          source: edge.source().id(),
+          target: edge.target().id(),
+          ...edge.data()
+        }));
+        
+        await saveGraph(nodes, edges, graphName);
+        setSaveStatus("Salvo com sucesso");
+        setTimeout(() => setSaveStatus(""), 2000);
+      } catch (error) {
+        console.error("Failed to save graph:", error);
+        setSaveStatus("Erro ao salvar");
+        toast.error("Erro ao salvar o grafo");
+      }
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, [cy, currentGraph?.id, user?.id, saveGraph, graphName]);
+  
   function handleOpenSetupModal() {
     setIsSetupModal(true)
   }
@@ -200,7 +259,34 @@ export function GraphArea() {
     setDrawMode(!drawMode)
   }
 
-
+  function handleManualSave = async () => {
+    if (!cy || !currentGraph?.id) return;
+    
+    try {
+      setSaveStatus("Salvando...");
+      
+      const nodes = cy.nodes().map(node => ({
+        id: node.id(),
+        ...node.data()
+      }));
+      
+      const edges = cy.edges().map(edge => ({
+        id: edge.id(),
+        source: edge.source().id(),
+        target: edge.target().id(),
+        ...edge.data()
+      }));
+      
+      await saveGraph(nodes, edges, graphName);
+      setSaveStatus("Salvo com sucesso");
+      setTimeout(() => setSaveStatus(""), 2000);
+      toast.success("Grafo salvo com sucesso!");
+    } catch (error) {
+      console.error("Failed to save graph:", error);
+      setSaveStatus("Erro ao salvar");
+      toast.error("Erro ao salvar o grafo");
+    }
+  };
 
 
   return (
@@ -258,6 +344,22 @@ export function GraphArea() {
             <span className="tooltiptext">Upload archive json from requests</span>
           </li>
 
+          <li className="tooltip">
+            <BiSave fontSize="1.5em" cursor="pointer" onClick={handleManualSave} style={{ cursor: cy ? 'pointer' : 'not-allowed' }} />
+            <span className="tooltiptext">Salvar grafo</span>
+            {saveStatus && <span className="save-status">{saveStatus}</span>}
+          </li>
+
+          {currentGraph && (
+            <li className="graph-name">
+              <input 
+                type="text" 
+                value={graphName} 
+                onChange={(e) => setGraphName(e.target.value)} 
+                onBlur={() => debouncedSave()}
+              />
+            </li>
+          )}
         </ul>
       </NavOptions>
 
