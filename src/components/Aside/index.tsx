@@ -21,7 +21,6 @@ export function Aside() {
   const { currentGraph, saveGraph } = useGraph();
   const qtdRequests = (0)
 
-
   //Adicionar novos Requests na lista de requisiçoes
   function appendRequestList(file: any) {
 
@@ -50,26 +49,6 @@ export function Aside() {
     }
   };
 
-  const handleSaveGraph = async () => {
-    if (!currentGraph?.id) {
-      toast.warning("Nenhum grafo carregado para salvar");
-      return;
-    }
-    
-    try {
-      // Aqui você precisaria obter os nodes e edges do Cytoscape
-      // Isso depende da sua implementação específica
-      const nodes: any[] = []; // Obtenha os nodes do grafo
-      const edges: any[] = []; // Obtenha as edges do grafo
-      
-      await saveGraph(nodes, edges);
-      toast.success("Grafo salvo com sucesso!");
-    } catch (error) {
-      console.error("Erro ao salvar grafo:", error);
-      toast.error("Falha ao salvar o grafo");
-    }
-  };
-  
   return (
     <Container>
       <main>

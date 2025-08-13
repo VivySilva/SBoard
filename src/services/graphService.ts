@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+type NodeType = 'c' | 't' | 's'
 
 interface Graph {
   id?: string;
-  nome: string;
+  name: string;
   created_by?: string;
   created_in?: string;
   update_in?: string;
@@ -19,7 +21,7 @@ interface Node {
   name: string;
   domain: number;
   region: number;
-  type: string;
+  type: NodeType;
   latitude?: number;
   longitude?: number;
   cpu: number;
@@ -48,18 +50,18 @@ export const createNewGraph = async (userId: string, name: string): Promise<Grap
   const { data, error } = await supabase
     .from('graphs')
     .insert([{ 
-      nome: name,
+      name: name,
       created_by: userId 
     }])
     .select()
     .single();
   
-  if (error) throw error;
-  if (!data) throw new Error('Failed to create graph');
-  
+  if (error) throw new Error(`Graph creation failed: ${error.message}`);
+  if (!data) throw new Error('No data returned from graph creation');
+
   return {
     id: data.id,
-    nome: data.nome,
+    name: data.nome,
     created_by: data.created_by,
     created_in: data.created_in,
     update_in: data.update_in
@@ -110,37 +112,40 @@ export const saveGraphStructure = async (
   if (edgesError) throw new Error(edgesError.message);
 };
 
-export const loadGraphData = async (graphId: string): Promise<{
-  graph: Graph;
-  nodes: Node[];
-  edges: Edge[];
-}> => {
-  // Busca metadados do grafo
-  const { data: graph, error: graphError } = await supabase
-    .from('graphs')
-    .select('*')
-    .eq('id', graphId)
-    .single();
-  
-  if (graphError) throw new Error(graphError.message);
+export const loadGraphData = async (graphId: string) => {
+  try {
+    // Consulta sequencial para evitar sobrecarga
+    const graph = await supabase
+      .from('graphs')
+      .select('*')
+      .eq('id', graphId)
+      .single();
 
-  // Busca nós
-  const { data: nodes, error: nodesError } = await supabase
-    .from('nodes')
-    .select('*')
-    .eq('graphs_id', graphId);
-  
-  if (nodesError) throw new Error(nodesError.message);
+    if (graph.error) throw graph.error;
 
-  // Busca arestas
-  const { data: edges, error: edgesError } = await supabase
-    .from('edges')
-    .select('*')
-    .eq('graph_id', graphId);
-  
-  if (edgesError) throw new Error(edgesError.message);
+    const nodes = await supabase
+      .from('nodes')
+      .select('*')
+      .eq('graphs_id', graphId);
 
-  return { graph, nodes: nodes || [], edges: edges || [] };
+    if (nodes.error) throw nodes.error;
+
+    const edges = await supabase
+      .from('edges')
+      .select('*')
+      .eq('graph_id', graphId);
+
+    if (edges.error) throw edges.error;
+
+    return {
+      graph: graph.data,
+      nodes: nodes.data || [],
+      edges: edges.data || []
+    };
+  } catch (error) {
+    console.error('Supabase error:', error);
+    throw new Error('Failed to load graph data');
+  }
 };
 
 export const getUserGraphs = async (userId: string): Promise<{
@@ -167,4 +172,39 @@ export const getUserGraphs = async (userId: string): Promise<{
     created: createdGraphs || [],
     shared: sharedGraphs?.map((item: any) => item.graphs) || []
   };
+};
+
+export const deleteUserGraph = async (graphId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('graphs')
+    .delete()
+    .eq('id', graphId);
+  
+  if (error) throw new Error(`Failed to delete graph: ${error.message}`);
+};
+
+export const shareGraphWithUser = async (
+  graphId: string, 
+  userId: string
+): Promise<void> => {
+  const { error } = await supabase
+    .from('collaborating_graphs')
+    .insert([{ graph_id: graphId, user_id: userId }]);
+  
+  if (error) throw new Error(`Failed to share graph: ${error.message}`);
+};
+
+export const updateSpecificGraphName = async (
+  graphId: string, 
+  newName: string
+): Promise<Graph> => {
+  const { data, error } = await supabase
+    .from('graphs')
+    .update({ name: newName, update_in: new Date().toISOString() })
+    .eq('id', graphId)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data as Graph;
 };

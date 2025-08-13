@@ -10,6 +10,7 @@ import { motion as MOTION, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { on } from 'events';
 import { toast } from 'react-toastify';
+import { useGraph } from '../../context/GraphContext/GraphContext';
 
 interface SideBarProps {
     username: string;
@@ -21,6 +22,18 @@ interface SideBarProps {
 export default function SideBar({ username, frame, onLogout, userPhotoUrl }: SideBarProps) {
 
     const navigate = useNavigate();
+    const { createGraph } = useGraph();
+
+    const handleNewProject = async () => {
+        try {
+            const newGraph = await createGraph('Novo Projeto');
+            navigate(`/canvas/${newGraph.id}`, { replace: true });
+            toast.success('Projeto criado com sucesso!');
+        } catch (error) {
+            toast.error('Falha ao criar novo projeto');
+            console.error(error);
+        }
+    };
 
     return (
         <>
@@ -60,7 +73,7 @@ export default function SideBar({ username, frame, onLogout, userPhotoUrl }: Sid
 
                             <h2>{username}</h2>
 
-                            <button onClick={() => navigate('/canva')}><GoPlus /> New Project</button>
+                            <button onClick={handleNewProject}><GoPlus /> New Project</button>
 
                             <ul className={styles.list_functions}>
                                 <li>

@@ -21,20 +21,20 @@ export function StartGraph() {
   const { graphId } = useParams();
 
   // Carrega o grafo quando o graphId muda
-  useEffect(() => {
-    if (graphId) {
-      const loadExistingGraph = async () => {
-        try {
-          const { nodes, edges } = await loadGraph(graphId);
-          initializeGraph(nodes, edges);
-          setIsGraph(true);
-        } catch (error) {
-          console.error("Failed to load graph:", error);
-        }
-      };
-      loadExistingGraph();
-    }
-  }, [graphId, loadGraph, initializeGraph, setIsGraph]);
+  // useEffect(() => {
+  //   if (graphId) {
+  //     const loadExistingGraph = async () => {
+  //       try {
+  //         const { nodes, edges } = await loadGraph(graphId);
+  //         initializeGraph(nodes, edges);
+  //         setIsGraph(true);
+  //       } catch (error) {
+  //         console.error("Failed to load graph:", error);
+  //       }
+  //     };
+  //     loadExistingGraph();
+  //   }
+  // }, [graphId, loadGraph, initializeGraph, setIsGraph]);
 
   if (!isGraph) {
     return (

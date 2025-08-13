@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import {useNavigate} from 'react-router-dom'
 import { useState, useEffect } from 'react';
 // import { completeRegistration } from '../../services/authGoogle';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/Auth/AuthContext';
 import { supabase } from '../../services/authGoogle';
 
 export default function Register() {

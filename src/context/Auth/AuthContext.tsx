@@ -150,6 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('googleToken', tempUser.sub);
       
       toast.success('Registered successfully!');
+      toast.success('Log in!!');
       navigate('/'); 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { CiSaveDown2 } from "react-icons/ci";
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/Auth/AuthContext';
 import { supabase } from '../../services/authGoogle';
 import { set } from 'react-hook-form';
 

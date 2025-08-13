@@ -36,8 +36,8 @@ export function GraphArea() {
   const { currentGraph, saveGraph, loading: graphLoading } = useGraph();
   const { user } = useAuth();
   const [saveStatus, setSaveStatus] = useState("");
-  const [graphName, setGraphName] = useState(currentGraph?.nome || 'new graph');
- 
+  const [graphName, setGraphName] = useState(currentGraph?.name || 'new graph');
+
   const layouts = [
     {
       name: "preset",
@@ -81,7 +81,7 @@ export function GraphArea() {
   // Atualiza o nome do grafo quando currentGraph muda
   useEffect(() => {
     if (currentGraph) {
-      setGraphName(currentGraph.nome);
+      setGraphName(currentGraph.name);
     }
   }, [currentGraph]);
 
@@ -259,7 +259,7 @@ export function GraphArea() {
     setDrawMode(!drawMode)
   }
 
-  function handleManualSave = async () => {
+  const handleManualSave = useCallback(async () => {
     if (!cy || !currentGraph?.id) return;
     
     try {
@@ -286,8 +286,7 @@ export function GraphArea() {
       setSaveStatus("Erro ao salvar");
       toast.error("Erro ao salvar o grafo");
     }
-  };
-
+  }, [cy, currentGraph?.id, saveGraph, graphName]);
 
   return (
     <Container>
@@ -350,7 +349,7 @@ export function GraphArea() {
             {saveStatus && <span className="save-status">{saveStatus}</span>}
           </li>
 
-          {currentGraph && (
+          {/* {currentGraph && (
             <li className="graph-name">
               <input 
                 type="text" 
@@ -358,8 +357,18 @@ export function GraphArea() {
                 onChange={(e) => setGraphName(e.target.value)} 
                 onBlur={() => debouncedSave()}
               />
-            </li>
-          )}
+            </li>   
+          )} */}
+
+          {/* <li className="tooltip">
+            <BiSave 
+              onClick={handleManualSave} 
+              style={{ cursor: cy ? 'pointer' : 'not-allowed' }} 
+            />
+            <span className="tooltiptext">Salvar grafo</span>
+            {saveStatus && <span className="save-status">{saveStatus}</span>}
+          </li> */}
+          
         </ul>
       </NavOptions>
 

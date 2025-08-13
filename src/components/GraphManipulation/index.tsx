@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { CytoscapeContext } from '../../context/CytoscapeGraph/CytoscapeContext';
 import { ElementModal } from '../ElementModal';
 import { GraphStyles } from './styles';
+import { useMemo, useCallback } from 'react';
 
 // const ElementModal = lazy(()=> import('../ElementModal').then(module=>({default:module.ElementModal})))
 const ChartOptions = lazy(()=> import('../ChartOptions').then(module=>({default:module.ChartOptions})))
@@ -11,7 +12,7 @@ const NodeModal = lazy(()=> import('../NodeModal').then(module=>({default:module
 const EdgeModal = lazy(()=> import('../EdgeModal').then(module=>({default:module.EdgeModal})))
 
 export interface propsGraphJson {
-  grapJSON: ElementsDefinition,
+  grapJSON?: ElementsDefinition,
 }
 
 
@@ -27,72 +28,57 @@ export function GraphManipulation({ grapJSON }: propsGraphJson) {
   const [nodeElement, setNodeElement] = useState<any>()
   const [edgeElement, setEdgeElement] = useState<any>()
 
-  Object.keys(grapJSON.edges).forEach(key => {
-    (grapJSON.edges[Number(key)].data) = {
-      ...grapJSON.edges[Number(key)].data,
-      id: `e${Number(key)}`,
-      delay: `${grapJSON.edges[Number(key)].data.delay ? grapJSON.edges[Number(key)].data.delay : (Math.floor(Math.random() * 100) + 1)}`,
-      reliability: `${grapJSON.edges[Number(key)].data.reliability ? grapJSON.edges[Number(key)].data.reliability : (Math.floor(Math.random() * 100) + 1)}`,
-      weight: `${grapJSON.edges[Number(key)].data.weight ? grapJSON.edges[Number(key)].data.weight : (Math.floor(Math.random() * 100) + 1)}`,
-      negative: `${grapJSON.edges[Number(key)].data.negative ? grapJSON.edges[Number(key)].data.negative : (Math.floor(Math.random() * 100) + 1)}`,
-      requests: []
-    }
-  })
-  //se o primeiro node não tem position entao os outros tambem nao terá, (diferença de envio via GML e JSON)
-  var notHasPositionInGraph = !grapJSON.nodes[0].position
+  const processedElements = useMemo(() => {
+    if (!grapJSON) return { nodes: [], edges: [] };
 
-  // encontrei um erro de um graph que tinha longitude e latitude em um node, mas não tinha position
-  var nothasPosInGraph = !grapJSON.nodes[0].data.pos
+    const processedNodes = [...(grapJSON.nodes || [])].map(node => {
+      const newNode = { ...node };
+      newNode.data = { ...newNode.data, requests: [] };
 
-  //caso nao tiver latitude e longitude, então não tem posição no graph, (gero no random)
-  var nothasLongLatInGraph = !grapJSON.nodes[0].data.Longitude && !grapJSON.nodes[0].data.Latitude
+      if (!newNode.position) {
+        if (newNode.data?.pos) {
+          newNode.position = {
+            x: Number(newNode.data.pos[0] || 0),
+            y: Number(newNode.data.pos[1] || 0)
+          };
+        } else if (newNode.data?.Longitude && newNode.data?.Latitude) {
+          newNode.position = {
+            x: Number(newNode.data.Longitude),
+            y: Number(newNode.data.Latitude)
+          };
+        } else {
+          newNode.position = {
+            x: Math.random() * 500,
+            y: Math.random() * 500
+          };
+        }
+      }
+      return newNode;
+    });
 
-  if (notHasPositionInGraph) {
+    const processedEdges = [...(grapJSON.edges || [])].map((edge, index) => ({
+      ...edge,
+      data: {
+        ...edge.data,
+        id: edge.data?.id || `e${index}`,
+        delay: edge.data?.delay || Math.floor(Math.random() * 100) + 1,
+        reliability: edge.data?.reliability || Math.floor(Math.random() * 100) + 1,
+        weight: edge.data?.weight || Math.floor(Math.random() * 100) + 1,
+        negative: edge.data?.negative || Math.floor(Math.random() * 100) + 1,
+        requests: []
+      }
+    }));
 
-    if (!nothasPosInGraph) {
-      Object.keys(grapJSON.nodes).forEach((key) => {
-        (
-          grapJSON.nodes[Number(key)].data = {
-            ...grapJSON.nodes[Number(key)].data,
-            requests: []
-          },
-          grapJSON.nodes[Number(key)].position = {
-            x: Number(`${grapJSON.nodes[Number(key)].data.pos[0]}`),
-            y: Number(`${grapJSON.nodes[Number(key)].data.pos[1]}`),
-          }
-        )
-      },
-      )
-    }
-    else if (!nothasLongLatInGraph) {
-      Object.keys(grapJSON.nodes).forEach((key) => {
-        (
-          grapJSON.nodes[Number(key)].data = {
-            ...grapJSON.nodes[Number(key)].data,
-            requests: []
-          },
-          grapJSON.nodes[Number(key)].position = {
-            x: Number(`${grapJSON.nodes[Number(key)].data.Longitude}`),
-            y: Number(`${grapJSON.nodes[Number(key)].data.Latitude}`),
-          }
-        )
-      })
-    }
-  } else {
-    Object.keys(grapJSON.nodes).forEach(key => {
-      (grapJSON.nodes[Number(key)].data = { ...grapJSON.nodes[Number(key)].data,  requests: [] })
-    })
-  }
-
-  // const elementos = CytoscapeComponent.normalizeElements({nodes: grapJSON.nodes, edges: grapJSON.edges});
-  const elementos = ({ nodes: grapJSON.nodes, edges: grapJSON.edges } as ElementsDefinition);
-
-
+    return { nodes: processedNodes, edges: processedEdges };
+  }, [grapJSON]);
 
   //configuraçoes e inicializaçao do cytoscape graph
   useEffect(() => {
+    if (!containerRef.current || !processedElements.nodes.length) return;
+
     const config = {
       container: containerRef.current,
+      elements: processedElements,
       layout: {
         name: 'preset',
         fit: true, //centraliza
@@ -254,15 +240,55 @@ export function GraphManipulation({ grapJSON }: propsGraphJson) {
           }
         }
       ],
-      elements: elementos,
       minZoom: 0.1,
       maxZoom: 6,
       zoomFactor: 0.05, // zoom factor per zoom tick
       zoomDelay: 45, // how many ms between zoom ticks
       zoom: 3
     };
-    setCy(cytoscape(config))
-  }, [])
+    const instance = cytoscape(config);
+    setCy(instance);
+
+    // Configuração de eventos
+    const setupEvents = () => {
+      instance.on('tap', function(e: any) {
+        var currentTapStamp = e.timeStamp;
+        var msFromLastTap = currentTapStamp - (previousTapStamp || 0);
+
+        if (msFromLastTap < 350) {
+          e.target.trigger('doubleTap', e);
+        }
+        previousTapStamp = currentTapStamp;
+      });
+
+      instance.on('doubleTap', function() {
+        handleOpenElementModal();
+      });
+
+      instance.on('cxttap', 'node', function(evt: any) {
+        setNodeElement(evt.target.data());
+        handleOpenNodeModal();
+      });
+
+      instance.on('cxttap', 'edge', function(evt: any) {
+        setEdgeElement(evt.target.data());
+        handleOpenEdgeModal();
+      });
+
+      instance.on('cxttap', function(evt: any) {
+        if (evt.target === instance) {
+          handleOpenChartOptionsModal();
+        }
+      });
+    };
+
+    let previousTapStamp: number;
+    setupEvents();
+
+    return () => {
+      instance.destroy();
+    };
+  }, [processedElements, setCy]);
 
   // funções automaticas inicializadas junto com o grafico 
   function CytoscapeFunctions() {
@@ -348,7 +374,7 @@ export function GraphManipulation({ grapJSON }: propsGraphJson) {
   return (
     <div>
       <div id='cy' >
-        <GraphStyles ref={containerRef} />
+        <div ref={containerRef} style={{ width: 'calc(100vw - 18rem)', height: '86vh' }} />
       </div>
 
       

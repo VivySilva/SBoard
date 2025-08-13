@@ -14,7 +14,7 @@ import CallSideBar from './components/CallSideBar/CallSideBar';
 import Account from './pages/Account/Account';
 import Projects from './pages/Projects/Projects';
 import MainLayout from './components/MainLayout/MainLayout';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/Auth/AuthContext';
 
 function App() {
 
@@ -28,7 +28,9 @@ function App() {
 
               <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path="/canva" element={<Canvas />} />
+                {/* <Route path="/canvas/:graphId" element={<Canvas />} /> */}
+                <Route path="/canvas/:graphId?" element={<Canvas />} />
+                <Route path="/canvas" element={<Canvas />} />
                 <Route path="/register" element={<Register />} />
 
                 <Route element={<MainLayout />} >
