@@ -7,8 +7,8 @@
 .my_projects{
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    place-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+    /* place-content: center; */
     gap: 10px;
 }
 

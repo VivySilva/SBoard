@@ -283,8 +283,8 @@ export function GraphArea() {
       toast.success("Grafo salvo com sucesso!");
     } catch (error) {
       console.error("Failed to save graph:", error);
-      setSaveStatus("Erro ao salvar");
-      toast.error("Erro ao salvar o grafo");
+      // setSaveStatus("Erro ao salvar");
+      // toast.error("Erro ao salvar o grafo");
     }
   }, [cy, currentGraph?.id, saveGraph, graphName]);
 
@@ -343,11 +343,11 @@ export function GraphArea() {
             <span className="tooltiptext">Upload archive json from requests</span>
           </li>
 
-          <li className="tooltip">
+          {/* <li className="tooltip">
             <BiSave fontSize="1.5em" cursor="pointer" onClick={handleManualSave} style={{ cursor: cy ? 'pointer' : 'not-allowed' }} />
             <span className="tooltiptext">Salvar grafo</span>
             {saveStatus && <span className="save-status">{saveStatus}</span>}
-          </li>
+          </li> */}
 
           {/* {currentGraph && (
             <li className="graph-name">
@@ -358,17 +358,17 @@ export function GraphArea() {
                 onBlur={() => debouncedSave()}
               />
             </li>   
-          )} */}
+          )}
 
-          {/* <li className="tooltip">
+          <li className="tooltip">
             <BiSave 
               onClick={handleManualSave} 
               style={{ cursor: cy ? 'pointer' : 'not-allowed' }} 
             />
             <span className="tooltiptext">Salvar grafo</span>
             {saveStatus && <span className="save-status">{saveStatus}</span>}
-          </li> */}
-          
+          </li>
+          '' */}
         </ul>
       </NavOptions>
 

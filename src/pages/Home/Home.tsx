@@ -69,7 +69,7 @@ export default function Home() {
                             <IoLogoGithub size={30} />
                             <h4>GitHub</h4>
                         </div>
-                        <a href="https://github.com/wellington-tinho/SBoard">https://github.com/wellington-tinho/SBoard</a>
+                        <a href="https://github.com/VivySilva/SBoard">https://github.com/VivySilva/SBoard</a>
                     </div>
                 </div>
             </div>
