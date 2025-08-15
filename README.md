@@ -2,7 +2,7 @@
    <a href="https://www.linkedin.com/in/wellington123/">
       <img alt="Wellington" src="https://img.shields.io/badge/-Wellington123-5965e0?style=flat&logo=Linkedin&logoColor=white" />
    </a>
-   <a href="https://www.linkedin.com/in/seu-linkedin/">
+   <a href="https://www.linkedin.com/in/viviany-silva-654621220/">
       <img alt=" Viviany" src="https://www.linkedin.com/in/viviany-silva-654621220?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" />
    </a>
   
@@ -147,4 +147,4 @@ Compartilhamento de projetos entre usuários
 
 Versionamento de grafos
 
-<h4 align="center"> Projeto original por <a target="_blank">Wellington</a> <br> Melhorias por <a target="_blank">Seu Nome</a> </h4> ```
+<h4 align="center"> Projeto original por <a target="_blank">Wellington</a> <br> Melhorias por <a target="_blank">Viviany</a> </h4> ```
